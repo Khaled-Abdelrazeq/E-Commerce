@@ -45,12 +45,6 @@ class AuthViewModel extends GetxController {
     listenToCode();
   }
 
-  @override
-  void onReady() {
-    // TODO: implement onReady
-    super.onReady();
-  }
-
   void listenToCode() async {
     await SmsAutoFill().listenForCode;
   }
@@ -96,6 +90,8 @@ class AuthViewModel extends GetxController {
   }
 
   void signInWithEmailAndPassword() async {
+    isLoading = true;
+    update();
     try {
       await _firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password)
@@ -181,7 +177,6 @@ class AuthViewModel extends GetxController {
       });
     } catch (e) {
       Get.snackbar('Status', e.toString());
-      debugPrint(e.toString());
     }
   }
 

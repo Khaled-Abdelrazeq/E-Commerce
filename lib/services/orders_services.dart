@@ -8,7 +8,7 @@ class OrdersServices {
 
   Future<void> addNewOrder(OrderModel model) async {
     DateTime now = DateTime.now();
-    String formattedDate = DateFormat('kk:mm:ss \n EEE d MMM').format(now);
+    String formattedDate = DateFormat('EEE d MMM kk:mm:ss').format(now);
 
     return await orderCollection.doc(formattedDate).set(model.toJson());
   }

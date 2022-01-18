@@ -83,7 +83,25 @@ class CustomCartElement extends StatelessWidget {
                         text: '\$${model.price}',
                         color: primaryColor,
                         isFontBold: true,
-                        fontSize: 14,
+                        fontSize: 12,
+                      ),
+                      const Spacer(),
+                      Container(
+                        width: 15,
+                        height: 15,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: model.color == '0x0'
+                                ? Colors.black
+                                : Color(int.parse(model.color!)),
+                            border: Border.all(color: Colors.grey)),
+                      ),
+                      const Spacer(),
+                      CustomText(
+                        alignment: Alignment.center,
+                        text: 'Size: ${model.size!}',
+                        isFontBold: true,
+                        fontSize: 12,
                       ),
                       const Spacer(),
                       Container(

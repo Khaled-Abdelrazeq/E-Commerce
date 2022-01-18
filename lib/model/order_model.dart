@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/model/user_model.dart';
 import 'cart_product_model.dart';
 
@@ -9,14 +8,19 @@ class OrderModel {
   double? importCharges;
   double? couponDiscountPrice;
   double? totalPrice;
+  String? date;
+  String? time;
 
-  OrderModel(
-      {this.userModel,
-      this.productModel,
-      this.couponDiscountPrice,
-      this.importCharges,
-      this.shipping,
-      this.totalPrice});
+  OrderModel({
+    this.userModel,
+    this.productModel,
+    this.couponDiscountPrice,
+    this.importCharges,
+    this.shipping,
+    this.totalPrice,
+    this.date,
+    this.time,
+  });
 
   OrderModel.fromJson(dynamic data) {
     if (data == null) return;
@@ -25,6 +29,8 @@ class OrderModel {
     couponDiscountPrice = data['couponDiscount'];
     importCharges = data['importCharges'];
     totalPrice = data['totalPrice'];
+    date = data['date'];
+    time = data['time'];
 
     if (data['userModel'] != null) {
       userModel = UserModel.fromJson(data['userModel']);
@@ -48,7 +54,9 @@ class OrderModel {
       'totalPrice': totalPrice,
       'shipping': shipping,
       'importCharges': importCharges,
-      'couponDiscount': couponDiscountPrice
+      'couponDiscount': couponDiscountPrice,
+      'date': date,
+      'time': time,
     };
   }
 }

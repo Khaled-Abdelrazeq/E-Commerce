@@ -41,9 +41,9 @@ class CartPage extends StatelessWidget {
           const SizedBox(height: 30),
           couponCode(context),
 
-          /// Sammary
+          /// Summary
           const SizedBox(height: 20),
-          samary(),
+          summary(),
           const SizedBox(height: 20),
 
           GetBuilder<CartViewModel>(
@@ -65,7 +65,7 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  Container samary() {
+  Container summary() {
     return Container(
       height: 200,
       decoration: BoxDecoration(

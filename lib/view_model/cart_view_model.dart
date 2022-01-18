@@ -5,6 +5,7 @@ import 'package:e_commerce/services/firestore_user.dart';
 import 'package:e_commerce/services/orders_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class CartViewModel extends GetxController {
   List<CartProductModel> cartProducts = [];
@@ -55,7 +56,9 @@ class CartViewModel extends GetxController {
   void addCartProduct(CartProductModel model) async {
     bool isFound = false;
     for (int i = 0; i < cartProducts.length; i++) {
-      if (cartProducts[i].name == model.name) {
+      if (cartProducts[i].name == model.name &&
+          cartProducts[i].color == model.color &&
+          cartProducts[i].size == model.size) {
         isFound = true;
         break;
       } else {
@@ -127,6 +130,8 @@ class CartViewModel extends GetxController {
                 userId: userModel?.userId),
             productModel: cartProducts,
             totalPrice: totalPrice,
+            date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+            time: DateFormat('kk:mm:ss').format(DateTime.now()),
           ))
           .catchError((e) => print('Error Check Out ${e.toString()}'));
 
