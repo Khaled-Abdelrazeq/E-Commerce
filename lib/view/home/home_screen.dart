@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce/constants/colors.dart';
 import 'package:e_commerce/view/home/flash_sale.dart';
+import 'package:e_commerce/view/widgets/carousel_item.dart';
+import 'package:e_commerce/view/widgets/cashed_image.dart';
 import 'package:e_commerce/view/widgets/custom_categories_view.dart';
 import 'package:e_commerce/view/widgets/custom_product_item.dart';
 import 'package:e_commerce/view/widgets/custom_text.dart';
@@ -117,32 +119,35 @@ class HomePage extends GetWidget<HomeViewModel> {
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
       width: double.infinity,
       height: 200,
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              'assets/images/advertiser.png',
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const StackElement(
-            text: 'Recommended Product',
-            startPadding: 25,
-            endPadding: 100,
-            topPadding: 50,
-          ),
-          const StackElement(
-            text: 'We recommend the best for you',
-            startPadding: 25,
-            endPadding: 0,
-            topPadding: 130,
-            isFontBold: false,
-            fontSize: 14,
-          ),
-        ],
-      ),
+      child: GetBuilder<HomeViewModel>(builder: (controller) {
+        return controller.loadingAdvertiser.value
+            ? const CircularProgressIndicator()
+            : Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: CustomCashedImage(
+                      fit: BoxFit.cover,
+                      imageURL: controller.advertiserModel!.imageUrl!,
+                    ),
+                  ),
+                  StackElement(
+                    text: controller.advertiserModel!.title!,
+                    startPadding: 25,
+                    endPadding: 100,
+                    topPadding: 50,
+                  ),
+                  StackElement(
+                    text: controller.advertiserModel!.content!,
+                    startPadding: 25,
+                    endPadding: 0,
+                    topPadding: 130,
+                    isFontBold: false,
+                    fontSize: 14,
+                  ),
+                ],
+              );
+      }),
     );
   }
 
@@ -269,7 +274,7 @@ class HomePage extends GetWidget<HomeViewModel> {
       builder: (controller) {
         return CirclePageIndicator(
           currentPageNotifier: controller.carouselIndex,
-          itemCount: controller.carouselImages.length,
+          itemCount: controller.carouselModel.length,
           selectedDotColor: primaryColor,
           dotColor: Colors.blue.shade50,
           onPageSelected: (index) {
@@ -284,28 +289,28 @@ class HomePage extends GetWidget<HomeViewModel> {
     return GetBuilder<HomeViewModel>(
       init: HomeViewModel(),
       builder: (controller) {
-        return CarouselSlider(
-          // items: homeModel.dataModel?.banners
-          //     .map(
-          //         (e) => cashedImage(imgURL: '${e.image}', fit: BoxFit.cover))
-          //     .toList(),
-          items: controller.carouselImages,
-          options: CarouselOptions(
-            onPageChanged: (int index, x) {
-              controller.changePageView(index);
-            },
-            height: 200,
-            initialPage: 0,
-            viewportFraction: 1,
-            enableInfiniteScroll: true,
-            reverse: false,
-            autoPlay: true,
-            autoPlayAnimationDuration: const Duration(seconds: 1),
-            autoPlayInterval: const Duration(seconds: 3),
-            autoPlayCurve: Curves.fastOutSlowIn,
-            scrollDirection: Axis.horizontal,
-          ),
-        );
+        return controller.loadingCarousel.value
+            ? const CircularProgressIndicator()
+            : CarouselSlider(
+                items: controller.carouselModel
+                    .map((e) => CarouselItem(model: e))
+                    .toList(),
+                options: CarouselOptions(
+                  onPageChanged: (int index, x) {
+                    controller.changePageView(index);
+                  },
+                  height: 200,
+                  initialPage: 0,
+                  viewportFraction: 1,
+                  enableInfiniteScroll: true,
+                  reverse: false,
+                  autoPlay: true,
+                  autoPlayAnimationDuration: const Duration(seconds: 1),
+                  autoPlayInterval: const Duration(seconds: 3),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  scrollDirection: Axis.horizontal,
+                ),
+              );
       },
     );
   }

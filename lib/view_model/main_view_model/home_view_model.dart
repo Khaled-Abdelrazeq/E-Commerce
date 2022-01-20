@@ -1,16 +1,28 @@
 import 'dart:math';
 
+import 'package:e_commerce/model/advertiser_model.dart';
+import 'package:e_commerce/model/carousel_model.dart';
 import 'package:e_commerce/model/category_model.dart';
 import 'package:e_commerce/model/product_model.dart';
+import 'package:e_commerce/services/advertiser_service.dart';
+import 'package:e_commerce/services/carousel_service.dart';
 import 'package:e_commerce/services/categories_service.dart';
 import 'package:e_commerce/services/product_service.dart';
-import 'package:e_commerce/view/widgets/carousel_item.dart';
 import 'package:e_commerce/view/widgets/custom_categories_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class HomeViewModel extends GetxController {
   var carouselIndex = ValueNotifier<int>(0);
+
+  /// Carousel Variables
+  final ValueNotifier<bool> _loadingCarousel = ValueNotifier(false);
+  ValueNotifier<bool> get loadingCarousel => _loadingCarousel;
+
+  /// Advertiser Variables
+  final ValueNotifier<bool> _loadingAdvertiser = ValueNotifier(false);
+  ValueNotifier<bool> get loadingAdvertiser => _loadingAdvertiser;
+  AdvertiserModel? advertiserModel;
 
   /// Categories Variables
   final ValueNotifier<bool> _loadingCategory = ValueNotifier(false);
@@ -31,19 +43,35 @@ class HomeViewModel extends GetxController {
   List<ProductModel> megaSaleProducts = [];
   List<ProductModel> mightLikeProducts = [];
 
-  List<Widget> carouselImages = [
-    const CarouselItem(imagePath: 'assets/images/advertiser.png'),
-    const CarouselItem(imagePath: 'assets/images/home_image.png'),
-    const CarouselItem(imagePath: 'assets/images/shoes_1.png'),
-    const CarouselItem(imagePath: 'assets/images/shoes_2.png'),
-    const CarouselItem(imagePath: 'assets/images/shoes_3.png'),
-    const CarouselItem(imagePath: 'assets/images/shoes_4.png'),
-  ];
+  List<CarouselModel> carouselModel = [];
 
   HomeViewModel() {
     getManCategories();
     getWomanCategories();
     getHomeProducts();
+    getCarouselData();
+    getAdvertiserData();
+  }
+
+  getAdvertiserData() async {
+    _loadingAdvertiser.value = true;
+    AdvertiserService().getAdvertiser().then((value) {
+      advertiserModel = AdvertiserModel.fromJson(value[0].data());
+      _loadingAdvertiser.value = false;
+
+      update();
+    });
+  }
+
+  getCarouselData() async {
+    _loadingCarousel.value = true;
+    CarouselService().getCarousels().then((value) {
+      for (int i = 0; i < value.length; i++) {
+        carouselModel.add(CarouselModel.fromJson(value[i].data()));
+        _loadingCarousel.value = false;
+      }
+      update();
+    });
   }
 
   void changePageView(int index) {

@@ -1,17 +1,17 @@
 class CarouselModel {
   String? imageUrl;
   String? title;
-  String? endedTime;
-  String? endedDate;
+  dynamic? endedTime;
+  // String? endedDate;
 
-  CarouselModel({this.imageUrl, this.title, this.endedDate, this.endedTime});
+  CarouselModel({this.imageUrl, this.title, this.endedTime});
 
   CarouselModel.fromJson(dynamic data) {
     if (data == null) return;
 
     imageUrl = data['imageUrl'];
     title = data['title'];
-    endedDate = data['endedDate'];
+    // endedDate = data['endedDate'];
     endedTime = data['endedTime'];
   }
 
@@ -19,7 +19,7 @@ class CarouselModel {
     return {
       'imageUrl': imageUrl,
       'title': title,
-      'endedDate': endedDate,
+      // 'endedDate': endedDate,
       'endedTime': endedTime,
     };
   }

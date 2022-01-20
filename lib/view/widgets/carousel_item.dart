@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce/model/carousel_model.dart';
+import 'package:e_commerce/view/widgets/cashed_image.dart';
 import 'package:e_commerce/view/widgets/stack_element.dart';
 import 'package:flutter/material.dart';
 
@@ -5,37 +8,40 @@ import 'custom_home_timer.dart';
 import 'custom_text.dart';
 
 class CarouselItem extends StatelessWidget {
-  final String imagePath;
-  final String title;
-  final String hours;
-  final String seconds;
-  final String minutes;
+  final CarouselModel model;
 
   const CarouselItem({
     Key? key,
-    required this.imagePath,
-    this.title = 'Super Flash Sale 50% Off',
-    this.hours = '08',
-    this.minutes = '34',
-    this.seconds = '52',
+    required this.model,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Timestamp time = model.endedTime;
+    Timestamp now = Timestamp.now();
+    int offerTime = time.seconds - now.seconds;
+    int days = (offerTime / 60 / 60) ~/ 24;
+    int hours = (offerTime - (days * 24 * 60 * 60)) / 60 ~/ 60;
+    int minutes =
+        (offerTime - ((days * 24 * 60 * 60) + (hours * 60 * 60))) ~/ 60;
+    // int sec = offerTime -
+    //     ((minutes * 60) + (hours * 60 * 60) + (days * 24 * 60 * 60));
+    if (days <= 0) days = 0;
+    if (hours <= 0) hours = 0;
+    if (minutes <= 0) minutes = 0;
+
     return Stack(
       alignment: Alignment.topLeft,
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: Image.asset(
-            imagePath,
-            width: double.infinity,
-            height: 200,
+          child: CustomCashedImage(
             fit: BoxFit.cover,
+            imageURL: model.imageUrl!,
           ),
         ),
         StackElement(
-          text: title,
+          text: model.title!,
           startPadding: 25,
           endPadding: 100,
           topPadding: 30,
@@ -45,7 +51,7 @@ class CarouselItem extends StatelessWidget {
           bottom: 40,
           child: Row(
             children: [
-              CustomHomeTimer(text: hours),
+              CustomHomeTimer(text: '$days'),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4.0),
                 child: CustomText(
@@ -54,7 +60,7 @@ class CarouselItem extends StatelessWidget {
                   fontSize: 22,
                 ),
               ),
-              CustomHomeTimer(text: minutes),
+              CustomHomeTimer(text: '$hours'),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4.0),
                 child: CustomText(
@@ -63,7 +69,7 @@ class CarouselItem extends StatelessWidget {
                   fontSize: 22,
                 ),
               ),
-              CustomHomeTimer(text: seconds),
+              CustomHomeTimer(text: '$minutes'),
             ],
           ),
         ),
